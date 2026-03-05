@@ -15,7 +15,7 @@ Keep the implementation minimal.
 """
 
 # TODO: Fill this in!
-YOUR_REFLEXION_PROMPT = "this is just a test"
+YOUR_REFLEXION_PROMPT = "test"
 
 
 # Ground-truth test suite used to evaluate generated code
