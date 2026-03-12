@@ -8,7 +8,9 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = "what is 2 times 2?"
+YOUR_SYSTEM_PROMPT = """
+Solve this problem, then give the final answer on the last line as "Answer: <number>. Think step by step about the subproblems before computing
+"""
 
 
 USER_PROMPT = """
