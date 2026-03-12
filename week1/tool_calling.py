@@ -70,7 +70,17 @@ TOOL_REGISTRY: Dict[str, Callable[..., str]] = {
 # ==========================
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You have access to the following tool:
+
+Tool name: output_every_func_return_type
+Description: Returns a newline-delimited list of "name: return_type" for each top-level function in a Python file.
+Arguments:
+  - file_path (string): path to the Python file to analyze
+
+When asked to call a tool, respond with ONLY a JSON object in this exact format:
+{"tool": "tool_name", "args": {"arg_name": "arg_value"}}
+
+Call the tool on the file: tool_calling.py"""
 
 
 def resolve_path(p: str) -> str:

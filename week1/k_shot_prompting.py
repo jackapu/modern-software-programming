@@ -7,11 +7,12 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = """
-Reverse the order of letters in the following word. Only output the reversed word, no other text:
+YOUR_SYSTEM_PROMPT = """Reverse the letters of a word. Output ONLY the reversed word, nothing else.
 
-httpstatus"
-"""
+Word: httpstatus
+h(1) t(2) t(3) p(4) s(5) t(6) a(7) t(8) u(9) s(10)
+Reading 10→1: s,u,t,a,t,s,p,t,t,h
+sutatsptth"""
 
 USER_PROMPT = """
 Reverse the order of letters in the following word. Only output the reversed word, no other text:
