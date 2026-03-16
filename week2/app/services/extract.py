@@ -66,6 +66,63 @@ def extract_action_items(text: str) -> List[str]:
     return unique
 
 
+def extract_action_items_llm(text: str, model: str = "llama3.1:8b") -> List[str]:
+    """Extract action items from text using an Ollama LLM with structured JSON output."""
+    if not text or not text.strip():
+        return []
+
+    response = chat(
+        model=model,
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You extract action items from text. "
+                    'Respond with a JSON object: {"action_items": ["item1", "item2"]}. '
+                    'If none, respond with: {"action_items": []}.'
+                ),
+            },
+            {
+                "role": "user",
+                "content": f"Extract action items from this text:\n\n{text}",
+            },
+        ],
+        format="json",
+    )
+
+    # Parse the structured JSON response
+    raw = response.message.content
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError:
+        return []
+
+    # Handle various response formats: [...], {"action_items": [...]}, or {key: str, ...}
+    if isinstance(parsed, list):
+        items = parsed
+    elif isinstance(parsed, dict):
+        # First try to find a list value (e.g. {"action_items": [...]})
+        list_val = next((v for v in parsed.values() if isinstance(v, list)), None)
+        if list_val is not None:
+            items = list_val
+        else:
+            # Fallback: collect all string values (e.g. {"task1": "Buy groceries", ...})
+            items = [v for v in parsed.values() if isinstance(v, str)]
+    else:
+        return []
+
+    # Return only non-empty string items, deduplicated
+    seen: set[str] = set()
+    unique: List[str] = []
+    for item in items:
+        if isinstance(item, str) and item.strip():
+            lowered = item.strip().lower()
+            if lowered not in seen:
+                seen.add(lowered)
+                unique.append(item.strip())
+    return unique
+
+
 def _looks_imperative(sentence: str) -> bool:
     words = re.findall(r"[A-Za-z']+", sentence)
     if not words:
