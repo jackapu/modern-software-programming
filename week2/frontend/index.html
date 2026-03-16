@@ -24,20 +24,25 @@
     <div class="row">
       <label class="row"><input id="save_note" type="checkbox" checked /> Save as note</label>
       <button id="extract">Extract</button>
+      <button id="extract-llm">Extract LLM</button>
     </div>
 
     <div class="items" id="items"></div>
 
+    <hr />
+    <button id="list-notes">List Notes</button>
+    <div id="notes-list"></div>
+
     <script>
       const $ = (sel) => document.querySelector(sel);
       const itemsEl = $('#items');
-      const btn = $('#extract');
-      btn.addEventListener('click', async () => {
+
+      async function doExtract(endpoint) {
         const text = $('#text').value;
         const save = $('#save_note').checked;
         itemsEl.textContent = 'Extracting...';
         try {
-          const res = await fetch('/action-items/extract', {
+          const res = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text, save_note: save }),
@@ -65,8 +70,30 @@
           console.error(err);
           itemsEl.textContent = 'Error extracting items';
         }
-      });
+      }
 
+      $('#extract').addEventListener('click', () => doExtract('/action-items/extract'));
+      $('#extract-llm').addEventListener('click', () => doExtract('/action-items/extract-llm'));
+
+      $('#list-notes').addEventListener('click', async () => {
+        const notesEl = $('#notes-list');
+        notesEl.textContent = 'Loading...';
+        try {
+          const res = await fetch('/notes');
+          if (!res.ok) throw new Error('Request failed');
+          const notes = await res.json();
+          if (notes.length === 0) {
+            notesEl.innerHTML = '<p class="muted">No notes found.</p>';
+            return;
+          }
+          notesEl.innerHTML = notes.map(n =>
+            `<div class="item"><strong>#${n.id}</strong> <span>${n.content.substring(0, 100)}</span> <span class="muted">${n.created_at}</span></div>`
+          ).join('');
+        } catch (err) {
+          console.error(err);
+          notesEl.textContent = 'Error loading notes';
+        }
+      });
     </script>
   </body>
   </html>
