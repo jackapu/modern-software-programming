@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "actual-budget-mcp"
+version = "0.1.0"
+description = "MCP server for Actual Budget"
+authors = ["Jack Pu"]
+readme = "README.md"
+packages = [{ include = "server" }]
+
+[tool.poetry.scripts]
+actual-budget-mcp = "server.main:main"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+actualpy = ">=0.21.0"
+mcp = ">=1.0.0"
+python-dotenv = ">=1.0.0"
+pydantic-settings = ">=2.0.0"
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501", "B008"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
